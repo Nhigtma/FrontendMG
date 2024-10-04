@@ -1,0 +1,117 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html, body {
+    height: 100%;
+    font-family: Arial, sans-serif;
+    background-color: #f1faee;
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal-content-deseos {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    width: 90%; 
+    max-width: 600px;
+    text-align: left;
+    overflow-y: auto;
+    max-height: 80vh;
+}
+
+.modal-content-deseos h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    text-align: center;
+}
+
+.modal-content-deseos label {
+    font-size: 1rem;
+    margin-bottom: 5px;
+    display: block;
+}
+
+.modal-content-deseos input,
+.modal-content-deseos textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 1rem;
+}
+
+.modal-content-deseos textarea {
+    height: 80px;
+    resize: none;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.modal-actions button {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    margin-left: 10px;
+    transition: background-color 0.3s ease;
+}
+
+.modal-actions button:first-child {
+    background-color: #ccc;
+}
+
+.modal-actions button:last-child {
+    background-color: #007BFF;
+    color: white;
+}
+
+.modal-actions button:hover {
+    opacity: 0.9;
+}
+
+.routine-days {
+    margin-top: 20px;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.routine-days div {
+    display: flex;
+    flex-direction: column;
+}
+
+.routine-days input {
+    margin-top: 4px;
+}
+
+.checkbox-container {
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 15px;
+    cursor: pointer;
+}
+
+.checkbox-container input[type="checkbox"] {
+    margin-right: 10px;
+}

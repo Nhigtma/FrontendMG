@@ -23,7 +23,6 @@ const Auth = () => {
     setErrorMessage('');
   };
 
-  // Registrar usuario utilizando Firebase y tu API
   const handleRegister = async (e) => {
     e.preventDefault();
     setErrorMessage('');
@@ -34,7 +33,7 @@ const Auth = () => {
     }
 
     try {
-      await registerUser(name, email, password); // Registra en la API
+      await registerUser(name, email, password);
       alert("Usuario registrado exitosamente");
       navigate('/createCategory');
     } catch (error) {
@@ -42,20 +41,17 @@ const Auth = () => {
     }
   };
 
-  // Iniciar sesión con Firebase y verificar en la API
   const handleLogin = async (e) => {
     e.preventDefault();
     setErrorMessage('');
 
     try {
-      // Primero, autentica con Firebase
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const idToken = await userCredential.user.getIdToken();
-      const uid = userCredential.user.uid; // Obtén el uid único del usuario
+      const uid = userCredential.user.uid;
       
-      // Guarda el token y el uid en el localStorage
       localStorage.setItem('token', idToken);
-      localStorage.setItem('idUser', uid); // Asegura que se refresca el uid para cada usuario
+      localStorage.setItem('userId', uid);
       
       alert("Inicio de sesión exitoso con Firebase");
       navigate('/createCategory');

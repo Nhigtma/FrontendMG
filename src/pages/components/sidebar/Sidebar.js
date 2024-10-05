@@ -1,12 +1,19 @@
 import React, { useState } from 'react';
 import { FaCalendarAlt, FaCog, FaHome, FaUser } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 import './sidebar.css';
 
-const Sidebar = ({ options }) => {
+const Sidebar = ({ options = [], categories = [] }) => {
     const [activeIndex, setActiveIndex] = useState(0);
+    const navigate = useNavigate();
 
     const handleOptionClick = (index) => {
         setActiveIndex(index);
+        if (index === 0) {
+            navigate('/home');
+        } else if (index === 1) {
+            navigate('/createCategory');
+        }
     };
 
     const icons = [<FaHome />, <FaCalendarAlt />, <FaCog />, <FaUser />];
@@ -15,7 +22,7 @@ const Sidebar = ({ options }) => {
         <div className="sidebar">
             <div className="sidebar-header">Mi App</div>
             <ul className="sidebar-menu">
-                {options.map((option, index) => (
+                {options.length > 0 && options.map((option, index) => (
                     <React.Fragment key={index}>
                         <li
                             className={activeIndex === index ? 'active' : ''}
@@ -26,6 +33,16 @@ const Sidebar = ({ options }) => {
                         </li>
                         {index === 1 && <div className="sidebar-divider"></div>}
                     </React.Fragment>
+                ))}
+
+                {categories.length > 0 && categories.map((category, index) => (
+                    <li
+                        key={index + options.length}
+                        className={activeIndex === index + options.length ? 'active' : ''}
+                        onClick={() => handleOptionClick(index + options.length)}
+                    >
+                        {category.name}
+                    </li>
                 ))}
             </ul>
 

@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createWish } from '../../js/wish';
 import './createWishModal.css';
 
 function CreateWishModal({ onClose }) {
@@ -6,24 +7,52 @@ function CreateWishModal({ onClose }) {
     const [description, setDescription] = useState('');
     const [isRoutine, setIsRoutine] = useState(false);
     const [weeklyRoutine, setWeeklyRoutine] = useState({
-        Lunes: '',
-        Martes: '',
-        Miercoles: '',
-        Jueves: '',
-        Viernes: '',
-        Sabado: '',
-        Domingo: '',
+        lunes: '',
+        martes: '',
+        miercoles: '',
+        jueves: '',
+        viernes: '',
+        sabado: '',
+        domingo: '',
     });
 
-    const handleCreate = () => {
-        console.log('Título:', title);
-        console.log('Descripción:', description);
-        console.log('Rutina:', isRoutine ? weeklyRoutine : 'Sin rutina');
-        onClose();
+    const handleCreate = async () => {
+        const userId = localStorage.getItem('userId');
+        const categoryId = localStorage.getItem('categoryId');
+
+        console.log('Valores actuales:', {
+            title,
+            description,
+            userId,
+            categoryId,
+            isRoutine,
+            weeklyRoutine,
+        });
+
+        const missingFields = [];
+        if (!title) missingFields.push('Título');
+        if (!description) missingFields.push('Descripción');
+        if (!userId) missingFields.push('userId');
+        if (!categoryId) missingFields.push('categoryId');
+
+        if (missingFields.length > 0) {
+            alert(`Faltan los siguientes campos: ${missingFields.join(', ')}`);
+            return;
+        }
+
+        const routines = isRoutine ? weeklyRoutine : null;
+
+        try {
+            await createWish(title, description, categoryId, userId, isRoutine, routines);
+            console.log('Deseo creado exitosamente');
+            onClose();
+        } catch (error) {
+            console.error('Error al crear el deseo:', error.message);
+        }
     };
 
     const handleRoutineChange = (day, value) => {
-        setWeeklyRoutine({ ...weeklyRoutine, [day]: value });
+        setWeeklyRoutine({ ...weeklyRoutine, [day.toLowerCase()]: value });
     };
 
     return (
@@ -59,7 +88,7 @@ function CreateWishModal({ onClose }) {
                     <div className="routine-days">
                         {Object.keys(weeklyRoutine).map((day) => (
                             <div key={day}>
-                                <label>{day}:</label>
+                                <label>{day.charAt(0).toUpperCase() + day.slice(1)}:</label>
                                 <input
                                     type="text"
                                     value={weeklyRoutine[day]}

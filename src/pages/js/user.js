@@ -54,7 +54,7 @@ export const loginUser = async (email, password) => {
         }
 
         localStorage.setItem('token', idToken);
-        localStorage.setItem('idUser', uid);
+        localStorage.setItem('userId', uid);
 
         return idToken;
     } catch (error) {

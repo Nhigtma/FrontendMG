@@ -2,7 +2,6 @@ import { getAuth } from 'firebase/auth';
 
 const API_URL = 'http://localhost:4000';
 
-// Función para crear categoría
 export const createCategory = async (name, description) => {
     try {
         const auth = getAuth();
@@ -12,13 +11,13 @@ export const createCategory = async (name, description) => {
             throw new Error('El usuario no está autenticado');
         }
 
-        const token = await user.getIdToken(); // Obtener el token de ID del usuario autenticado
+        const token = await user.getIdToken();
 
         const response = await fetch(`${API_URL}/protected/category`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`, // Incluir el token en las cabeceras
+                'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify({ name, description }),
         });

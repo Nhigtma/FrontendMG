@@ -1,4 +1,3 @@
-import { getAuth } from 'firebase/auth'; // Importa la función para obtener la autenticación
 import React, { useState } from 'react';
 import { createCategory } from '../../js/category';
 import CreateWishModal from '../createWishModal/CreateWishModal';
@@ -10,6 +9,7 @@ function CreateCategory() {
     const [isWishModalOpen, setIsWishModalOpen] = useState(false);
     const [categoryName, setCategoryName] = useState('');
     const [categoryDescription, setCategoryDescription] = useState('');
+    const [categories, setCategories] = useState([]);
     const [error, setError] = useState({ name: false, description: false });
 
     const openCategoryModal = () => {
@@ -31,17 +31,6 @@ function CreateCategory() {
         setIsWishModalOpen(false);
     };
 
-    const getToken = async () => {
-        const auth = getAuth();
-        const user = auth.currentUser;
-
-        if (!user) {
-            throw new Error('El usuario no está autenticado');
-        }
-
-        return await user.getIdToken(); // Obtener el token de ID
-    };
-
     const handleCreateCategory = async () => {
         if (categoryName === '' || categoryDescription === '') {
             setError({
@@ -53,6 +42,11 @@ function CreateCategory() {
         try {
             const response = await createCategory(categoryName, categoryDescription);
             console.log('Categoría creada exitosamente:', response);
+
+            localStorage.setItem('categoryId', response.id);
+
+            setCategories([...categories, { name: categoryName, id: response.id }]);
+
             closeCategoryModal();
             openWishModal();
         } catch (error) {
@@ -63,7 +57,7 @@ function CreateCategory() {
 
     return (
         <div className="create-category-page">
-            <Sidebar options={["Categoría", "Calendario", "Opción 3", "Opción 4"]} />
+            <Sidebar options={["Categoría", "Calendario"]} categories={categories} />
             <div className="main-content">
                 <div className="create-category-container">
                     <div className="create-category-button" onClick={openCategoryModal}>
@@ -106,7 +100,7 @@ function CreateCategory() {
                             </div>
                         </div>
                     )}
-
+                    
                     {isWishModalOpen && <CreateWishModal onClose={closeWishModal} />}
                 </div>
             </div>

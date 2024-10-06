@@ -116,7 +116,7 @@ function Home() {
 
     return (
         <div className="home-container">
-            <Sidebar options={["Categoría", "Calendario", "Opción 3", "Opción 4"]} />
+            <Sidebar options={["Categoría", "Calendario"]} />
 
             <div className="home-content">
                 <h1 className="welcome-title">Calendario</h1>

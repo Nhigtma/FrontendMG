@@ -39,19 +39,22 @@ function CreateCategory() {
             });
             return;
         }
+
         try {
             const response = await createCategory(categoryName, categoryDescription);
             console.log('Categoría creada exitosamente:', response);
 
-            localStorage.setItem('categoryId', response.id);
+            // Dependiendo de cómo sea la respuesta del Swagger, ajusta el acceso a los datos:
+            localStorage.setItem('categoryId', response.id || response.data.id);
+            localStorage.setItem('categoryDescription', categoryDescription);
 
-            setCategories([...categories, { name: categoryName, id: response.id }]);
+            setCategories([...categories, { name: categoryName, id: response.id || response.data.id }]);
 
             closeCategoryModal();
             openWishModal();
         } catch (error) {
-            console.error('Error al crear la categoría front:', error.message);
-            alert(`Error al crear la categoría front: ${error.message}`);
+            console.error('Error al crear la categoría en el frontend:', error.response?.data?.message || error.message);
+            alert(`Error al crear la categoría: ${error.response?.data?.message || error.message}`);
         }
     };
 
@@ -100,7 +103,7 @@ function CreateCategory() {
                             </div>
                         </div>
                     )}
-                    
+
                     {isWishModalOpen && <CreateWishModal onClose={closeWishModal} />}
                 </div>
             </div>

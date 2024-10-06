@@ -10,9 +10,12 @@ const Sidebar = ({ options = [], categories = [] }) => {
     const handleOptionClick = (index) => {
         setActiveIndex(index);
         if (index === 0) {
-            navigate('/home');
-        } else if (index === 1) {
             navigate('/createCategory');
+        } else if (index === 1) {
+            navigate('/home');
+        } else {
+            const category = categories[index - options.length];
+            navigate(`/category/${category.name}`); // Navegar a la vista con el nombre de la categoría
         }
     };
 

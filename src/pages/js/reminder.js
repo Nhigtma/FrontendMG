@@ -2,7 +2,7 @@ import { getAuth } from 'firebase/auth';
 
 const API_URL = 'http://localhost:4000';
 
-export const createCategory = async (name, description) => {
+export const createReminder = async (reminderDate, reminderMessage, isSent, userId) => {
     try {
         const auth = getAuth();
         const user = auth.currentUser;
@@ -13,32 +13,37 @@ export const createCategory = async (name, description) => {
 
         const token = await user.getIdToken();
 
-        const response = await fetch(`${API_URL}/protected/category`, {
+        const response = await fetch(`${API_URL}/protected/reminders`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({ name, description }),
+            body: JSON.stringify({
+                reminder_date: reminderDate,
+                reminder_message: reminderMessage,
+                is_sent: isSent,
+                user_id: userId
+            }),
         });
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.error || 'Error al crear la categoría');
+            throw new Error(errorData.error || 'Error al crear el recordatorio');
         }
 
         return await response.json();
     } catch (error) {
-        console.error('Error:', error.message);
+        console.error('Error al crear el recordatorio:', error.message);
         throw new Error(error.message);
     }
 };
 
-export const getCategories = async () => {
+export const getRemindersByUserId = async (userId) => {
     try {
         const token = localStorage.getItem('token');
 
-        const response = await fetch(`${API_URL}/protected/category`, {
+        const response = await fetch(`${API_URL}/protected/reminders/${userId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,21 +54,21 @@ export const getCategories = async () => {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.error || 'Error al obtener las categorías');
+            throw new Error(data.error || 'Error al obtener los recordatorios');
         }
 
         return data;
     } catch (error) {
-        console.error('Error al obtener las categorías:', error.message);
+        console.error('Error al obtener los recordatorios:', error.message);
         throw error;
     }
 };
 
-export const getCategoryById = async (categoryId) => {
+export const getReminderById = async (reminderId) => {
     try {
         const token = localStorage.getItem('token');
 
-        const response = await fetch(`${API_URL}/protected/category/${categoryId}`, {
+        const response = await fetch(`${API_URL}/protected/reminders/${reminderId}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
@@ -74,46 +79,51 @@ export const getCategoryById = async (categoryId) => {
         const data = await response.json();
 
         if (!response.ok) {
-            throw new Error(data.error || 'Error al obtener la categoría');
+            throw new Error(data.error || 'Error al obtener el recordatorio');
         }
 
         return data;
     } catch (error) {
-        console.error('Error al obtener la categoría:', error.message);
+        console.error('Error al obtener el recordatorio:', error.message);
         throw error;
     }
 };
 
-export const updateCategoryById = async (categoryId, name, description) => {
+export const updateReminderById = async (reminderId, reminderDate, reminderMessage, isSent, userId) => {
     try {
         const token = localStorage.getItem('token');
 
-        const response = await fetch(`${API_URL}/protected/category/${categoryId}`, {
+        const response = await fetch(`${API_URL}/protected/reminders/${reminderId}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
-            body: JSON.stringify({ name, description }),
+            body: JSON.stringify({
+                reminder_date: reminderDate,
+                reminder_message: reminderMessage,
+                is_sent: isSent,
+                user_id: userId
+            }),
         });
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.error || 'Error al actualizar la categoría');
+            throw new Error(errorData.error || 'Error al actualizar el recordatorio');
         }
 
         return await response.json();
     } catch (error) {
-        console.error('Error al actualizar la categoría:', error.message);
+        console.error('Error al actualizar el recordatorio:', error.message);
         throw new Error(error.message);
     }
 };
 
-export const deleteCategoryById = async (categoryId) => {
+export const deleteReminderById = async (reminderId) => {
     try {
         const token = localStorage.getItem('token');
 
-        const response = await fetch(`${API_URL}/protected/category/${categoryId}`, {
+        const response = await fetch(`${API_URL}/protected/reminders/${reminderId}`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -123,37 +133,12 @@ export const deleteCategoryById = async (categoryId) => {
 
         if (!response.ok) {
             const errorData = await response.json();
-            throw new Error(errorData.error || 'Error al eliminar la categoría');
+            throw new Error(errorData.error || 'Error al eliminar el recordatorio');
         }
 
         return await response.json();
     } catch (error) {
-        console.error('Error al eliminar la categoría:', error.message);
-        throw error;
-    }
-};
-
-export const getWishesByCategory = async (categoryId) => {
-    try {
-        const token = localStorage.getItem('token');
-
-        const response = await fetch(`${API_URL}/protected/wishes/category/${categoryId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || 'Error al obtener los deseos de la categoría');
-        }
-
-        return data;
-    } catch (error) {
-        console.error('Error al obtener los deseos:', error.message);
+        console.error('Error al eliminar el recordatorio:', error.message);
         throw error;
     }
 };

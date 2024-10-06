@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { createWishWithRoutine } from '../../js/routineWishes';
 import { createWish } from '../../js/wish';
 import './createWishModal.css';
 
@@ -40,19 +41,46 @@ function CreateWishModal({ onClose }) {
             return;
         }
 
-        const routines = isRoutine ? weeklyRoutine : null;
+        // Validación: Si es una rutina, asegurarse de que haya al menos un día con valor
+        if (isRoutine && Object.values(weeklyRoutine).every(day => day === '')) {
+            alert("Debes ingresar al menos una rutina para algún día.");
+            return;
+        }
+
+        const routines = {
+            lunes: weeklyRoutine.lunes || null,
+            martes: weeklyRoutine.martes || null,
+            miercoles: weeklyRoutine.miercoles || null,
+            jueves: weeklyRoutine.jueves || null,
+            viernes: weeklyRoutine.viernes || null,
+            sabado: weeklyRoutine.sabado || null,
+            domingo: weeklyRoutine.domingo || null,
+        };
 
         try {
-            await createWish(title, description, categoryId, userId, isRoutine, routines);
-            console.log('Deseo creado exitosamente');
+            if (isRoutine) {
+                const wishData = {
+                    title,
+                    description,
+                    user_id: userId,
+                    category_id: categoryId,
+                    is_routine: true,
+                    routines
+                };
+                await createWishWithRoutine(wishData);
+                console.log('Deseo con rutina creado exitosamente');
+            } else {
+                await createWish(title, description, categoryId, userId, false, null);
+                console.log('Deseo creado exitosamente');
+            }
             onClose();
         } catch (error) {
-            console.error('Error al crear el deseo:', error.message);
+            console.error('Error al crear el deseo o la rutina:', error.message);
         }
     };
 
     const handleRoutineChange = (day, value) => {
-        setWeeklyRoutine({ ...weeklyRoutine, [day.toLowerCase()]: value });
+        setWeeklyRoutine({ ...weeklyRoutine, [day]: value });
     };
 
     return (

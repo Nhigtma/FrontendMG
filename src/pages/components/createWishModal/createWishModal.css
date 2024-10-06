@@ -115,3 +115,8 @@ html, body {
 .checkbox-container input[type="checkbox"] {
     margin-right: 10px;
 }
+.success-message {
+    margin-top: 10px;
+    color: green; /* Puedes cambiar el color si lo deseas */
+    font-weight: bold;
+}

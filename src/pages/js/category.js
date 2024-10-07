@@ -137,25 +137,40 @@ export const deleteCategoryById = async (categoryId) => {
 export const getWishesByCategory = async (category_id) => {
     const token = localStorage.getItem('token');
 
+    if (!token) {
+        console.error("Token no disponible.");
+        return null;
+    }
+
     try {
         const response = await fetch(`${API_URL}/protected/wishes/category/${category_id}`, {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
             },
         });
 
-        const data = await response.json();
-        console.log('datos recibidos:', data); 
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Error al obtener los deseos de la categoría');
+        }
 
+        const data = await response.json();
         if (!response.ok) {
             throw new Error(data.error || 'Error al obtener los deseos de la categoría');
         }
 
-        return data;
+        const wishes = data.map(wish => ({
+            title: wish.title,
+            description: wish.description,
+        }));
+
+        console.log('Datos recibidos:', wishes);
+        return wishes;
+
     } catch (error) {
         console.error('Error al obtener los deseos de la categoría:', error.message);
         throw error;
     }
 };
-

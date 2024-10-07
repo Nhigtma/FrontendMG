@@ -1,50 +1,64 @@
 import React, { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { getWishesByCategory } from '../../js/category';
-import { getWishById } from '../../js/wish';
+import { createComment, getCommentsByWishId } from '../../js/comments';
 import Sidebar from '../sidebar/Sidebar';
 import './categoryView.css';
 
 const CategoryView = () => {
-    const { categoryName } = useParams(); // Obtener el nombre de la categoría de la URL
-    const [categoryDescription, setCategoryDescription] = useState(''); // Descripción de la categoría
-    const [wishes, setWishes] = useState([]); // Lista de deseos
-    const [wishDetails, setWishDetails] = useState([]); // Detalles de los deseos
+    const { categoryName } = useParams();
+    const [categoryDescription, setCategoryDescription] = useState('Descripción no disponible.');
+    const [wishDetails, setWishDetails] = useState([]);
+    const [comments, setComments] = useState({});
+    const [newComment, setNewComment] = useState('');
+    const [selectedWishId, setSelectedWishId] = useState(null);
 
     useEffect(() => {
         const storedDescription = localStorage.getItem('categoryDescription');
-        const categoryId = localStorage.getItem('categoryId'); // Obtén el categoryId del localStorage
+        const categoryId = localStorage.getItem('categoryId');
 
-        setCategoryDescription(storedDescription || 'Descripción no disponible.');
+        if (storedDescription) {
+            setCategoryDescription(storedDescription);
+        }
 
         if (categoryId) {
             const fetchWishes = async () => {
                 try {
-                    const response = await getWishesByCategory(categoryId); // Llamar a la API con el ID de la categoría
-                    if (response?.data) {
-                        setWishes(response.data); // Guardar los deseos en el estado
+                    const wishes = await getWishesByCategory(categoryId);
+                    if (wishes) {
+                        const uniqueWishes = wishes.filter(
+                            (wish, index, self) =>
+                                index === self.findIndex((w) => w.title === wish.title)
+                        );
+                        setWishDetails(uniqueWishes);
 
-                        // Ahora, obtener los detalles de cada deseo
-                        const wishesDetailsPromises = response.data.map(async (wish) => {
-                            const wishDetail = await getWishById(wish.id); // Llamar a la API para obtener los detalles del deseo
-                            return wishDetail; // Devolver los detalles
-                        });
-
-                        const allWishDetails = await Promise.all(wishesDetailsPromises); // Esperar a que todas las promesas se resuelvan
-                        setWishDetails(allWishDetails); // Guardar los detalles de los deseos en el estado
-                    } else {
-                        console.error('No se encontraron deseos.');
+                        // Obtener comentarios para cada deseo
+                        const commentsData = {};
+                        for (const wish of uniqueWishes) {
+                            const wishComments = await getCommentsByWishId(wish.id);
+                            commentsData[wish.id] = wishComments;
+                        }
+                        setComments(commentsData);
                     }
                 } catch (error) {
                     console.error('Error al obtener los deseos:', error.message);
                 }
             };
 
-            fetchWishes(); // Ejecutar la función al cargar el componente
-        } else {
-            console.error('No se encontró el categoryId en el localStorage.');
+            fetchWishes();
         }
     }, []);
+
+    const handleCommentSubmit = async (wishId) => {
+        try {
+            await createComment(wishId, newComment);
+            setNewComment('');
+            const updatedComments = await getCommentsByWishId(wishId);
+            setComments((prevComments) => ({ ...prevComments, [wishId]: updatedComments }));
+        } catch (error) {
+            console.error('Error al crear el comentario:', error.message);
+        }
+    };
 
     return (
         <div className="category-view-container">
@@ -57,10 +71,37 @@ const CategoryView = () => {
                     <h2>Deseos</h2>
                     {wishDetails.length > 0 ? (
                         <ul>
-                            {wishDetails.map(wish => (
-                                <li key={wish.id}>
-                                    <h3>{wish.title}</h3>  {/* Mostrar el título del deseo */}
-                                    <p>{wish.description}</p>  {/* Mostrar la descripción del deseo */}
+                            {wishDetails.map((wish, index) => (
+                                <li key={index}>
+                                    <h3>{wish.title}</h3>
+                                    <p>{wish.description}</p>
+
+                                    <div className="comments-section">
+                                        <h4>Comentarios</h4>
+                                        <ul>
+                                            {comments[wish.id]?.length > 0 ? (
+                                                comments[wish.id].map((comment, i) => (
+                                                    <li key={i}>{comment.comment_text}</li>
+                                                ))
+                                            ) : (
+                                                <li>No hay comentarios.</li>
+                                            )}
+                                        </ul>
+
+                                        <form
+                                            onSubmit={(e) => {
+                                                e.preventDefault();
+                                                handleCommentSubmit(wish.id);
+                                            }}
+                                        >
+                                            <textarea
+                                                value={newComment}
+                                                onChange={(e) => setNewComment(e.target.value)}
+                                                placeholder="Escribe un comentario..."
+                                            />
+                                            <button type="submit">Añadir comentario</button>
+                                        </form>
+                                    </div>
                                 </li>
                             ))}
                         </ul>

@@ -93,8 +93,7 @@ export const updateWishById = async (wishId, title, description) => {
         throw error;
     }
 };
-
-// Eliminar un deseo por ID
+    
 export const deleteWishById = async (wishId) => {
     const token = localStorage.getItem('token');
 

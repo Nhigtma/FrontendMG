@@ -133,27 +133,27 @@ export const deleteCategoryById = async (categoryId) => {
     }
 };
 
-export const getWishesByCategory = async (categoryId) => {
-    try {
-        const token = localStorage.getItem('token');
+// Obtener deseos por categoría
+export const getWishesByCategory = async (category_id) => {
+    const token = localStorage.getItem('token');
 
-        const response = await fetch(`${API_URL}/protected/wishes/category/${categoryId}`, {
+    try {
+        const response = await fetch(`${API_URL}/protected/wishes/category/${category_id}`, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
                 'Authorization': `Bearer ${token}`,
             },
         });
 
         const data = await response.json();
-
         if (!response.ok) {
             throw new Error(data.error || 'Error al obtener los deseos de la categoría');
         }
 
         return data;
     } catch (error) {
-        console.error('Error al obtener los deseos:', error.message);
+        console.error('Error al obtener los deseos de la categoría:', error.message);
         throw error;
     }
 };
+

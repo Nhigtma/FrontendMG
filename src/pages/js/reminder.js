@@ -1,144 +1,139 @@
-import { getAuth } from 'firebase/auth';
+const BASE_URL = 'http://localhost:4000/protected/reminders'; // Cambia la URL según tu configuración
 
-const API_URL = 'http://localhost:4000';
+// Función para crear un nuevo recordatorio
+export async function createReminder(userId, reminderData) {
+    const token = localStorage.getItem('token');
+    const response = await fetch(BASE_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`, // Asegúrate de tener el token correcto
+        },
+        body: JSON.stringify({
+            user_id: userId,
+            reminder_date: reminderData.reminder_date,
+            reminder_message: reminderData.reminder_message,
+            is_sent: false, // Cambia esto si es necesario
+        }),
+    });
 
-export const createReminder = async (reminderDate, reminderMessage, isSent, userId) => {
-    try {
-        const auth = getAuth();
-        const user = auth.currentUser;
-
-        if (!user) {
-            throw new Error('El usuario no está autenticado');
-        }
-
-        const token = await user.getIdToken();
-
-        const response = await fetch(`${API_URL}/protected/reminders`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-                reminder_date: reminderDate,
-                reminder_message: reminderMessage,
-                is_sent: isSent,
-                user_id: userId
-            }),
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Error al crear el recordatorio');
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Error al crear el recordatorio:', error.message);
-        throw new Error(error.message);
-    }
-};
-
-export const getRemindersByUserId = async (userId) => {
-    try {
-        const token = localStorage.getItem('token');
-
-        const response = await fetch(`${API_URL}/protected/reminders/${userId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-
+    if (response.ok) {
         const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || 'Error al obtener los recordatorios');
-        }
-
-        return data;
-    } catch (error) {
-        console.error('Error al obtener los recordatorios:', error.message);
-        throw error;
+        console.log('Recordatorio creado:', data);
+    } else {
+        console.error('Error al crear el recordatorio:', response.statusText);
     }
-};
+}
 
-export const getReminderById = async (reminderId) => {
-    try {
-        const token = localStorage.getItem('token');
+// Función para obtener todos los recordatorios de un usuario
+export async function getReminders(userId) {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${BASE_URL}/${userId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`, // Asegúrate de tener el token correcto
+        },
+    });
 
-        const response = await fetch(`${API_URL}/protected/reminders/${reminderId}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-        });
+    if (response.ok) {
+        const reminders = await response.json();
+        // Retornamos solo la fecha y la descripción
+        const filteredReminders = reminders.map(reminder => ({
+            reminder_date: reminder.reminder_date,
+            reminder_message: reminder.reminder_message,
+        }));
+        console.log('Recordatorios:', filteredReminders);
+        return filteredReminders;
+    } else {
+        console.error('Error al obtener los recordatorios:', response.statusText);
+    }
+}
 
+// Función para obtener un recordatorio por ID
+export async function getReminderById(reminderId) {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${BASE_URL}/${reminderId}`, {
+        method: 'GET',
+        headers: {
+            'Authorization': `Bearer ${token}`, // Asegúrate de tener el token correcto
+        },
+    });
+
+    if (response.ok) {
+        const reminder = await response.json();
+        // Retornamos solo la fecha y la descripción
+        const filteredReminder = {
+            reminder_date: reminder.reminder_date,
+            reminder_message: reminder.reminder_message,
+        };
+        console.log('Recordatorio encontrado:', filteredReminder);
+        return filteredReminder;
+    } else {
+        console.error('Error al obtener el recordatorio:', response.statusText);
+    }
+}
+
+// Función para actualizar un recordatorio por ID
+export async function updateReminder(reminderId, updatedData) {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${BASE_URL}/${reminderId}`, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`, // Asegúrate de tener el token correcto
+        },
+        body: JSON.stringify(updatedData),
+    });
+
+    if (response.ok) {
         const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.error || 'Error al obtener el recordatorio');
-        }
-
-        return data;
-    } catch (error) {
-        console.error('Error al obtener el recordatorio:', error.message);
-        throw error;
+        console.log('Recordatorio actualizado:', data);
+    } else {
+        console.error('Error al actualizar el recordatorio:', response.statusText);
     }
+}
+
+// Función para eliminar un recordatorio por ID
+export async function deleteReminder(reminderId) {
+    const token = localStorage.getItem('token');
+    const response = await fetch(`${BASE_URL}/${reminderId}`, {
+        method: 'DELETE',
+        headers: {
+            'Authorization': `Bearer ${token}`, // Asegúrate de tener el token correcto
+        },
+    });
+
+    if (response.ok) {
+        console.log('Recordatorio eliminado correctamente');
+    } else {
+        console.error('Error al eliminar el recordatorio:', response.statusText);
+    }
+}
+/*
+// Ejemplo de uso
+const userId = 'el_id_del_usuario'; // Cambia esto al ID del usuario correcto
+const reminderData = {
+    reminder_date: '2024-10-08T10:00:00Z', // Cambia esto a la fecha y hora del recordatorio
+    reminder_message: 'Este es un recordatorio de prueba', // Cambia esto al mensaje del recordatorio
 };
 
-export const updateReminderById = async (reminderId, reminderDate, reminderMessage, isSent, userId) => {
-    try {
-        const token = localStorage.getItem('token');
+// Crear un nuevo recordatorio
+createReminder(userId, reminderData);
 
-        const response = await fetch(`${API_URL}/protected/reminders/${reminderId}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify({
-                reminder_date: reminderDate,
-                reminder_message: reminderMessage,
-                is_sent: isSent,
-                user_id: userId
-            }),
-        });
+// Obtener todos los recordatorios del usuario
+getReminders(userId);
 
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Error al actualizar el recordatorio');
-        }
+// Obtener un recordatorio específico por ID
+const reminderId = 'el_id_del_recordatorio'; // Cambia esto al ID del recordatorio correcto
+getReminderById(reminderId);
 
-        return await response.json();
-    } catch (error) {
-        console.error('Error al actualizar el recordatorio:', error.message);
-        throw new Error(error.message);
-    }
+// Actualizar un recordatorio específico
+const updatedReminderData = {
+    reminder_date: '2024-10-09T10:00:00Z', // Nueva fecha
+    reminder_message: 'Este es un recordatorio actualizado', // Nuevo mensaje
 };
+updateReminder(reminderId, updatedReminderData);
 
-export const deleteReminderById = async (reminderId) => {
-    try {
-        const token = localStorage.getItem('token');
-
-        const response = await fetch(`${API_URL}/protected/reminders/${reminderId}`, {
-            method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-
-        if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Error al eliminar el recordatorio');
-        }
-
-        return await response.json();
-    } catch (error) {
-        console.error('Error al eliminar el recordatorio:', error.message);
-        throw error;
-    }
-};
+// Eliminar un recordatorio específico
+deleteReminder(reminderId);
+*/

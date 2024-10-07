@@ -127,7 +127,57 @@ export const getAllWishesWithRoutines = async () => {
             throw new Error(data.error || 'Error al obtener todos los deseos con rutinas');
         }
 
-        return data;
+        // Organizar deseos y rutinas
+        const organizedWishes = data.map(wish => {
+            const organizedRoutines = {
+                lunes: [],
+                martes: [],
+                miercoles: [],
+                jueves: [],
+                viernes: [],
+                sabado: [],
+                domingo: [],
+            };
+
+            // Organizar rutinas por día de la semana
+            wish.routines.forEach(routine => {
+                switch (routine.week_day_id) {
+                    case process.env.LUNES:
+                        organizedRoutines.lunes.push(routine);
+                        break;
+                    case process.env.MARTES:
+                        organizedRoutines.martes.push(routine);
+                        break;
+                    case process.env.MIERCOLES:
+                        organizedRoutines.miercoles.push(routine);
+                        break;
+                    case process.env.JUEVES:
+                        organizedRoutines.jueves.push(routine);
+                        break;
+                    case process.env.VIERNES:
+                        organizedRoutines.viernes.push(routine);
+                        break;
+                    case process.env.SABADO:
+                        organizedRoutines.sabado.push(routine);
+                        break;
+                    case process.env.DOMINGO:
+                        organizedRoutines.domingo.push(routine);
+                        break;
+                    default:
+                        break;
+                }
+            });
+
+            return {
+                id: wish.id,
+                user_id: wish.user_id,
+                title: wish.title,
+                description: wish.description,
+                routines: organizedRoutines,
+            };
+        });
+
+        return organizedWishes;
     } catch (error) {
         console.error('Error al obtener todos los deseos con rutinas:', error.message);
         throw error;

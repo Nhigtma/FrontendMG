@@ -151,7 +151,7 @@ export const completeWish = async (wishId, userId) => {
     };
 
     try {
-        const response = await fetch(`${API_URL}/protected/wishes/complete/${wishId}`, {
+        const response = await fetch(`${API_URL}/protected/wishes/complete/${userId}/${wishId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -181,7 +181,7 @@ export const performRoutine = async (wishId, userId) => {
     };
 
     try {
-        const response = await fetch(`${API_URL}/protected/wishes/performRoutine/${wishId}`, {
+        const response = await fetch(`${API_URL}/protected/wishes/performRoutine/${userId}/${wishId}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -202,29 +202,6 @@ export const performRoutine = async (wishId, userId) => {
     }
 };
 
-// Reiniciar el estado de "wasPerformed" de las rutinas del usuario
-export const resetWasPerformed = async (userId) => {
-    const token = localStorage.getItem('token');
-
-    try {
-        const response = await fetch(`${API_URL}/protected/wishes/resetWasPerformed/${userId}`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-            },
-        });
-
-        const data = await response.json();
-        if (!response.ok) {
-            throw new Error(data.error || 'Error al reiniciar el estado "wasPerformed"');
-        }
-
-        return data;
-    } catch (error) {
-        console.error('Error al reiniciar el estado "wasPerformed":', error.message);
-        throw error;
-    }
-};
 
 // export const routineWishes = async (title, description, categoryId, userId, routines) => {
 //     const token = localStorage.getItem('token');

@@ -146,6 +146,8 @@ export const getWishesByCategory = async (category_id) => {
         });
 
         const data = await response.json();
+        console.log('datos recibidos:', data); 
+
         if (!response.ok) {
             throw new Error(data.error || 'Error al obtener los deseos de la categoría');
         }

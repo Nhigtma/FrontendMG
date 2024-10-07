@@ -2,7 +2,7 @@ import { getAuth } from 'firebase/auth';
 
 const API_URL = 'http://localhost:4000';
 
-export const getUserPoints = async (userId) => {
+export const getUserPoints = async () => {
     try {
         const auth = getAuth();
         const user = auth.currentUser;
@@ -11,6 +11,7 @@ export const getUserPoints = async (userId) => {
             throw new Error('El usuario no está autenticado');
         }
 
+        const userId = localStorage.getItem('userId');
         const token = await user.getIdToken();
 
         const response = await fetch(`${API_URL}/protected/points/${userId}`, {
@@ -27,7 +28,10 @@ export const getUserPoints = async (userId) => {
             throw new Error(data.error || 'Error al obtener los puntos del usuario');
         }
 
-        return data;
+        return {
+            points: data.points,
+            multiplier: data.multiplier,
+        };
     } catch (error) {
         console.error('Error al obtener los puntos del usuario:', error.message);
         throw error;

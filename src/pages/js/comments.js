@@ -52,7 +52,8 @@ export const getCommentsByWishId = async (wishId) => {
             throw new Error(data.error || 'Error al obtener los comentarios');
         }
 
-        return data;
+        // Retornar solo los textos de los comentarios
+        return data.map(comment => comment.comment_text);
     } catch (error) {
         console.error('Error al obtener los comentarios:', error.message);
         throw error;
@@ -79,7 +80,7 @@ export const deleteCommentById = async (commentId) => {
         return await response.json();
     } catch (error) {
         console.error('Error al eliminar el comentario:', error.message);
-        throw error;
+        throw new Error(error.message);
     }
 };
 

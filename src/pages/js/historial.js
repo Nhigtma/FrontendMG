@@ -2,7 +2,7 @@ import { getAuth } from 'firebase/auth';
 
 const API_URL = 'http://localhost:4000';
 
-export const getUserHistory = async (userId) => {
+export const getUserHistory = async () => {
     try {
         const auth = getAuth();
         const user = auth.currentUser;
@@ -11,7 +11,8 @@ export const getUserHistory = async (userId) => {
             throw new Error('El usuario no está autenticado');
         }
 
-        const token = await user.getIdToken();
+        const userId = localStorage.getItem('userId'); // Obtener el userId del local storage
+        const token = localStorage.getItem('token');
 
         const response = await fetch(`${API_URL}/protected/history/${userId}`, {
             method: 'GET',
@@ -27,7 +28,10 @@ export const getUserHistory = async (userId) => {
             throw new Error(data.error || 'Error al obtener el historial del usuario');
         }
 
-        return data;
+        return {
+            highestScore: data.history.highest_score,
+            wishes: data.wishes,
+        };
     } catch (error) {
         console.error('Error al obtener el historial del usuario:', error.message);
         throw error;

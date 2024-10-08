@@ -1,0 +1,37 @@
+body {
+    margin: 0; /* Eliminar el margen por defecto del body */
+    background-color: #007BFF; /* Color de fondo para toda la página */
+}
+
+.notifications-container {
+    background-color: #007BFF;
+    padding: 10px;
+    max-width: 500px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.notification-card {
+    margin-bottom: 8px;
+}
+
+.notification-card .MuiCardContent-root {
+    padding: 12px;
+}
+
+.MuiTypography-h4 {
+    font-size: 1.5rem;
+    margin-bottom: 15px;
+}
+
+.MuiListItemText-root {
+    text-align: left;
+}
+
+.MuiTypography-h6 {
+    font-size: 1rem;
+}
+
+.notifications-container button {
+    margin-bottom: 13px; /* Espacio debajo del botón */
+}

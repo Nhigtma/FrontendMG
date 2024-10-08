@@ -1,4 +1,5 @@
-function downloadPDF(userId) {
+// src/pages/js/getPDF.js
+export function downloadPDF(userId, token) {
     fetch(`http://localhost:4000/protected/routines/generatePDF/${userId}`, {
         method: 'GET',
         headers: {
@@ -10,18 +11,16 @@ function downloadPDF(userId) {
         if (!response.ok) {
             throw new Error('Error generando PDF');
         }
-        return response.blob(); // Convertimos la respuesta a un blob (archivo)
+        return response.blob();
     })
     .then(blob => {
-        // Crear un enlace temporal para forzar la descarga del archivo
         const link = document.createElement('a');
         link.href = window.URL.createObjectURL(blob);
-        link.download = `routines_${userId}.pdf`; // Corrección en la concatenación de la cadena
-        document.body.appendChild(link); // Añadir el enlace al cuerpo del documento
-        link.click(); // Forzar el clic para descargar
-        link.remove(); // Eliminar el enlace del DOM
+        link.download = `routines_${userId}.pdf`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
 
-        // Liberar el objeto URL
         window.URL.revokeObjectURL(link.href);
     })
     .catch(error => console.error('Error:', error));

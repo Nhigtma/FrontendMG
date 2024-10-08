@@ -1,5 +1,5 @@
 // src/components/Topbar.js
-import { faBell, faUser } from '@fortawesome/free-solid-svg-icons';
+import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
 import './topbar.css';
@@ -38,20 +38,7 @@ const Topbar = () => {
     <div className="topbar">
       <div className="topbar-left">
       </div>
-      <div className="topbar-right">
-        <FontAwesomeIcon 
-          icon={faBell} 
-          className="notification-icon" 
-          onClick={toggleNotifications} 
-        />
-        {isNotificationOpen && (
-          <div className={`dropdown-menu notifications-menu`} ref={notificationRef}>
-            <ul>
-              <li>No tienes notificaciones.</li>
-            </ul>
-          </div>
-        )}
-        
+      <div className="topbar-right"> 
         <FontAwesomeIcon
           icon={faUser}
           className="user-icon"

@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
+import { downloadPDF } from '../../js/getPDF'; // Importa la función para descargar el PDF
 import Sidebar from '../sidebar/Sidebar';
 import './home.css';
 
@@ -114,6 +115,16 @@ function Home() {
         return null;
     };
 
+    const handleCreatePdfClick = () => {
+        const userId = localStorage.getItem('userId'); // Obtiene el userId del localStorage
+        const token = localStorage.getItem('token'); // Obtiene el token del localStorage
+        if (userId && token) {
+            downloadPDF(userId, token);
+        } else {
+            console.error('User ID o token no encontrado');
+        }
+    };
+
     return (
         <div className="home-container">
             <Sidebar options={["Categoría", "Calendario"]} />
@@ -130,6 +141,9 @@ function Home() {
                             tileClassName={tileClassName}
                             locale="es-ES"
                         />
+                        <button className="create-pdf-button" onClick={handleCreatePdfClick}>
+                            Crear PDF
+                        </button>
                     </div>
 
                     <div className="reminders-section">

@@ -1,98 +1,141 @@
 .category-view-container {
     display: flex;
     margin-left: 220px;
-    height: 90vh;
-    background-color: rgba(168, 218, 220, 0.9); /* Fondo similar */
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);  /* Sombra */
-    align-items: center;
-}
-
-.category-content {
     padding: 20px;
+    background-color: #f0f4f9;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    height: 100vh;
+  }
+  
+  .category-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     flex-grow: 1;
-    margin: 100px;
-    background-color: #f0f0f0;
-    border-radius: 8px;
-}
-
-.category-title {
-    font-size: 2em;
-    color: #333;
-    margin-bottom: 10px;
-}
-
-.category-description {
-    font-size: 1.2em;
-    color: #666;
+  }
+  
+  .category-title {
+    font-size: 2.5em;
+    color: #00796b;
     margin-bottom: 20px;
-}
-
-@media (max-width: 768px) {
-    .category-view-container {
-        margin-left: 150px;
-        height: auto;
-    }
-
-    .category-content {
-        padding: 15px;
-        margin: 10px;
-    }
-}
-
-@media (max-width: 480px) {
-    .category-view-container {
-        margin-left: 100px;
-        height: auto;
-    }
-
-    .category-content {
-        padding: 10px;
-        margin: 5px;
-    }
-}
-
-.comments-section {
+  }
+  
+  .category-description {
+    font-size: 1.2em;
+    color: #555;
+    margin-bottom: 30px;
+  }
+  
+  .wishes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 20px;
+  }
+  
+  .wish-card {
+    background-color: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    transition: transform 0.2s ease-in-out;
+  }
+  
+  .wish-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .wish-title {
+    font-size: 1.5em;
+    color: #00796b;
+    margin-bottom: 10px;
+  }
+  
+  .wish-description {
+    font-size: 1em;
+    color: #666;
+  }
+  
+  .wish-actions {
     margin-top: 20px;
-}
-
-.comments-section h4 {
-    margin-bottom: 10px;
-}
-
-.comments-section ul {
-    list-style-type: none;
-    padding-left: 0;
-}
-
-.comments-section ul li {
-    background-color: #f0f0f0;
-    margin-bottom: 10px;
+  }
+  
+  .wish-button {
     padding: 10px;
-    border-radius: 5px;
-}
-
-.comments-section form {
-    margin-top: 15px;
-}
-
-.comments-section textarea {
-    width: 100%;
-    height: 60px;
-    margin-bottom: 10px;
-    padding: 10px;
-    border-radius: 5px;
-    border: 1px solid #ccc;
-}
-
-.comments-section button {
-    padding: 10px 15px;
-    background-color: #007bff;
-    color: #fff;
+    border-radius: 8px;
     border: none;
-    border-radius: 5px;
     cursor: pointer;
-}
-
-.comments-section button:hover {
-    background-color: #0056b3;
-}
+    margin-right: 10px;
+    background-color: #00796b;
+    color: #fff;
+    transition: background-color 0.3s ease;
+  }
+  
+  .wish-button:hover {
+    background-color: #004d40;
+  }
+  
+  .comments-section {
+    margin-top: 20px;
+  }
+  
+  .comments-section ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .comment-textarea {
+    width: 100%;
+    height: 60px; /* Tamaño fijo en altura */
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+    margin-bottom: 10px;
+    resize: none; /* Desactiva la capacidad de redimensionar */
+    overflow-y: auto; /* Muestra una barra de desplazamiento si el contenido es mayor al tamaño fijo */
+  }
+  
+  
+  .comment-button {
+    padding: 10px;
+    background-color: #388e3c;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+  }
+  
+  .comment-button:hover {
+    background-color: #2e7d32;
+  }
+  
+  .wish-form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    background-color: #f9f9f9;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .wish-input, .wish-textarea {
+    width: 100%;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  .form-actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .wish-button.cancel {
+    background-color: #d32f2f;
+  }
+  
+  .wish-button.cancel:hover {
+    background-color: #b71c1c;
+  }
+  

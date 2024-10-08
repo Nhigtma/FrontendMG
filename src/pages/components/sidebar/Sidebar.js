@@ -13,6 +13,8 @@ const Sidebar = ({ options = [], categories = [] }) => {
             navigate('/createCategory');
         } else if (index === 1) {
             navigate('/home');
+        } else if (index === 'history') {
+            navigate('/history'); // Navegar a la página del historial
         } else {
             const category = categories[index - options.length];
             navigate(`/category/${category.name}`); // Navegar a la vista con el nombre de la categoría
@@ -23,7 +25,7 @@ const Sidebar = ({ options = [], categories = [] }) => {
 
     return (
         <div className="sidebar">
-            <div className="sidebar-header">Mi App</div>
+            <div className="sidebar-header">WishPlanner</div>
             <ul className="sidebar-menu">
                 {options.length > 0 && options.map((option, index) => (
                     <React.Fragment key={index}>
@@ -34,10 +36,20 @@ const Sidebar = ({ options = [], categories = [] }) => {
                             <span className="icon">{icons[index]}</span>
                             {option}
                         </li>
-                        {index === 1 && <div className="sidebar-divider"></div>}
+                        {index === 1 && (
+                            <>
+                                <li
+                                    className={activeIndex === 'history' ? 'active' : ''}
+                                    onClick={() => handleOptionClick('history')}
+                                >
+                                    <span className="icon">{icons[1]}</span>
+                                    Historial
+                                </li>
+                            </>
+                        )}
                     </React.Fragment>
                 ))}
-
+                <div className="sidebar-divider"></div>
                 {categories.length > 0 && categories.map((category, index) => (
                     <li
                         key={index + options.length}

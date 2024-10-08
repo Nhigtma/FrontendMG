@@ -41,7 +41,6 @@ function CreateWishModal({ onClose }) {
             return;
         }
 
-        // Validación: Si es una rutina, asegurarse de que haya al menos un día con valor
         if (isRoutine && Object.values(weeklyRoutine).every(day => day === '')) {
             alert("Debes ingresar al menos una rutina para algún día.");
             return;

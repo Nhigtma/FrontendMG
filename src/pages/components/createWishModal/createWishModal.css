@@ -117,6 +117,6 @@ html, body {
 }
 .success-message {
     margin-top: 10px;
-    color: green; /* Puedes cambiar el color si lo deseas */
+    color: green;
     font-weight: bold;
 }

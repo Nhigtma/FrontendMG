@@ -5,10 +5,10 @@ import './notificationsCompenent.css';
 
 const NotificationsComponent = () => {
     const notifications = useWebSocketNotifications('ws://localhost:4000');
-    const [showNotifications, setShowNotifications] = useState(false); // Estado para manejar la visibilidad
+    const [showNotifications, setShowNotifications] = useState(false);
 
     const toggleNotifications = () => {
-        setShowNotifications(prevState => !prevState); // Cambia la visibilidad
+        setShowNotifications(prevState => !prevState);
     };
 
     return (
@@ -16,7 +16,7 @@ const NotificationsComponent = () => {
             <Button variant="contained" onClick={toggleNotifications}>
                 {showNotifications ? 'Ocultar Notificaciones' : 'Mostrar Notificaciones'}
             </Button>
-            {showNotifications && ( // Solo muestra las notificaciones si el estado es verdadero
+            {showNotifications && (
                 <div>
                     <Typography variant="h4" component="h2" gutterBottom>
                         Notificaciones

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { FaComment, FaEdit, FaTrash } from 'react-icons/fa';
 import { useParams } from 'react-router-dom';
-import { getWishesByCategory } from '../../js/category'; // Asegúrate de que la función getRoutinesByWishId esté importada
+import { getWishesByCategory } from '../../js/category';
 import { getCommentsByWishId } from '../../js/comments';
 import { getRoutinesByWishId } from '../../js/routineWishes';
 import { deleteWishById, updateWishById } from '../../js/wish';
@@ -13,7 +13,7 @@ const CategoryView = () => {
   const [categoryDescription, setCategoryDescription] = useState('Descripción no disponible.');
   const [wishDetails, setWishDetails] = useState([]);
   const [comments, setComments] = useState({});
-  const [routines, setRoutines] = useState({}); // Nuevo estado para rutinas
+  const [routines, setRoutines] = useState({});
   const [newComment, setNewComment] = useState('');
   const [selectedWishId, setSelectedWishId] = useState(null);
   const [editMode, setEditMode] = useState(false);
@@ -33,19 +33,18 @@ const CategoryView = () => {
           if (wishes) {
             setWishDetails([...new Map(wishes.map(wish => [wish.title, wish])).values()]);
             const commentsData = {};
-            const routinesData = {}; // Para almacenar rutinas
+            const routinesData = {};
 
             for (const wish of wishes) {
               const wishComments = await getCommentsByWishId(wish.id);
               commentsData[wish.id] = wishComments;
 
-              // Obtener rutinas para cada deseo
               const wishRoutines = await getRoutinesByWishId(wish.id);
-              routinesData[wish.id] = wishRoutines; // Almacenar rutinas por ID de deseo
+              routinesData[wish.id] = wishRoutines;
             }
 
             setComments(commentsData);
-            setRoutines(routinesData); // Establecer rutinas
+            setRoutines(routinesData);
           }
         } catch (error) {
           console.error('Error al obtener los deseos:', error.message);
@@ -98,7 +97,7 @@ const CategoryView = () => {
                 key={wish.id}
                 wish={wish}
                 comments={comments[wish.id]}
-                routines={routines[wish.id]} // Pasar rutinas
+                routines={routines[wish.id]}
                 onEditClick={handleEditClick}
                 onDeleteClick={handleDeleteWish}
                 newComment={newComment}
@@ -139,7 +138,7 @@ const WishItem = ({ wish, comments, routines, onEditClick, onDeleteClick, newCom
     </div>
 
     <CommentsSection comments={comments} newComment={newComment} setNewComment={setNewComment} />
-    <RoutinesSection routines={routines} /> {/* Sección para mostrar rutinas */}
+    <RoutinesSection routines={routines} />
   </div>
 );
 
@@ -161,14 +160,13 @@ const CommentsSection = ({ comments = [], newComment, setNewComment }) => (
   </div>
 );
 
-// Nueva sección para mostrar las rutinas
 const RoutinesSection = ({ routines = [] }) => (
   <div className="routines-section">
     <h4>Rutinas</h4>
     {routines.length > 0 ? (
       <ul>
         {routines.map((routine, index) => (
-          <li key={index}>{routine.description}</li> // Asegúrate de que el objeto routine tenga la propiedad description
+          <li key={index}>{routine.description}</li>
         ))}
       </ul>
     ) : (

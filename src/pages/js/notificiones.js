@@ -41,19 +41,16 @@ const useWebSocketNotifications = (socketUrl) => {
         const timeDiff = new Date(timeRemaining).getTime() - new Date().getTime();
 
         if (timeDiff > 0) {
-            // Ejecutar la notificación en el tiempo programado
             setTimeout(() => {
                 displayReminder(message);
             }, timeDiff);
         } else {
-            // Si la fecha ya pasó, mostrarla inmediatamente
             displayReminder(message);
         }
     };
 
     const displayReminder = (message) => {
         console.log('Recordatorio:', message);
-        // Aquí puedes integrar el código para mostrar la notificación en la interfaz
         setNotifications((prevNotifications) => [...prevNotifications, { type: 'reminder', message }]);
     };
 

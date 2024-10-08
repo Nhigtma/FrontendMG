@@ -1,6 +1,6 @@
 body {
-    margin: 0; /* Eliminar el margen por defecto del body */
-    background-color: #007BFF; /* Color de fondo para toda la página */
+    margin: 0;
+    background-color: #007BFF;
 }
 
 .notifications-container {
@@ -33,5 +33,5 @@ body {
 }
 
 .notifications-container button {
-    margin-bottom: 13px; /* Espacio debajo del botón */
+    margin-bottom: 13px;
 }

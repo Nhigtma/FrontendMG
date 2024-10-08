@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
-import { downloadPDF } from '../../js/getPDF'; // Importa la función para descargar el PDF
+import { downloadPDF } from '../../js/getPDF';
 import Sidebar from '../sidebar/Sidebar';
 import './home.css';
 
@@ -116,8 +116,8 @@ function Home() {
     };
 
     const handleCreatePdfClick = () => {
-        const userId = localStorage.getItem('userId'); // Obtiene el userId del localStorage
-        const token = localStorage.getItem('token'); // Obtiene el token del localStorage
+        const userId = localStorage.getItem('userId');
+        const token = localStorage.getItem('token');
         if (userId && token) {
             downloadPDF(userId, token);
         } else {

@@ -200,25 +200,3 @@ export const performRoutine = async (wishId, userId) => {
         throw error;
     }
 };
-
-
-// export const routineWishes = async (title, description, categoryId, userId, routines) => {
-//     const token = localStorage.getItem('token');
-
-//     const routineData = {
-//         title,
-//         description,
-//         user_id: userId,
-//         category_id: categoryId,
-//         is_routine: true,
-//         routines: {
-//             lunes: routines.lunes || null,
-//             martes: routines.martes || null,
-//             miercoles: routines.miercoles || null,
-//             jueves: routines.jueves || null,
-//             viernes: routines.viernes || null,
-//             sabado: routines.sabado || null,
-//             domingo: routines.domingo || null,
-//         }
-//     };
-// }

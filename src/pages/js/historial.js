@@ -11,7 +11,7 @@ export const getUserHistory = async () => {
             throw new Error('El usuario no está autenticado');
         }
 
-        const userId = localStorage.getItem('userId'); // Obtener el userId del local storage
+        const userId = localStorage.getItem('userId');
         const token = localStorage.getItem('token');
 
         const response = await fetch(`${API_URL}/protected/history/${userId}`, {

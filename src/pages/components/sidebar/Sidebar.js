@@ -14,10 +14,10 @@ const Sidebar = ({ options = [], categories = [] }) => {
         } else if (index === 1) {
             navigate('/home');
         } else if (index === 'history') {
-            navigate('/history'); // Navegar a la página del historial
+            navigate('/history');
         } else {
             const category = categories[index - options.length];
-            navigate(`/category/${category.name}`); // Navegar a la vista con el nombre de la categoría
+            navigate(`/category/${category.name}`);
         }
     };
 

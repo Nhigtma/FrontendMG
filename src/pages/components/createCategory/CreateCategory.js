@@ -44,7 +44,6 @@ function CreateCategory() {
             const response = await createCategory(categoryName, categoryDescription);
             console.log('Categoría creada exitosamente:', response);
 
-            // Dependiendo de cómo sea la respuesta del Swagger, ajusta el acceso a los datos:
             localStorage.setItem('categoryId', response.id || response.data.id);
             localStorage.setItem('categoryDescription', categoryDescription);
 

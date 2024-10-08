@@ -91,8 +91,8 @@
     border-radius: 8px;
     border: 1px solid #ccc;
     margin-bottom: 10px;
-    resize: none; /* Desactiva la capacidad de redimensionar */
-    overflow-y: auto; /* Muestra una barra de desplazamiento si el contenido es mayor al tamaño fijo */
+    resize: none;
+    overflow-y: auto;
   }
   
   

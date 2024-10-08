@@ -177,7 +177,7 @@
 .create-pdf-button {
   margin-top: 10px;
   padding: 10px 20px;
-  background-color: #ff6347; /* Color rojo tomate */
+  background-color: #ff6347;
   color: white;
   border: none;
   border-radius: 4px;
@@ -185,5 +185,5 @@
 }
 
 .create-pdf-button:hover {
-  background-color: #e55340; /* Color más oscuro al pasar el cursor */
+  background-color: #e55340;
 }

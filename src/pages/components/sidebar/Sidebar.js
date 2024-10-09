@@ -1,12 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FaCalendarAlt, FaCog, FaHome, FaUser } from 'react-icons/fa';
 import { useNavigate } from 'react-router-dom';
 import './sidebar.css';
 
-const Sidebar = ({ options = [], categories = [] }) => {
+const Sidebar = ({ options = [] }) => {
     const [activeIndex, setActiveIndex] = useState(0);
+    const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
 
+    // Cargar las categorías desde el localStorage al iniciar
+    useEffect(() => {
+        const storedCategories = JSON.parse(localStorage.getItem('categories')) || [];
+        setCategories(storedCategories);
+    }, []);
+
+    // Manejar clic en las opciones
     const handleOptionClick = (index) => {
         setActiveIndex(index);
         if (index === 0) {
@@ -19,6 +27,13 @@ const Sidebar = ({ options = [], categories = [] }) => {
             const category = categories[index - options.length];
             navigate(`/category/${category.name}`);
         }
+    };
+
+    // Guardar una nueva categoría
+    const addCategory = (newCategory) => {
+        const updatedCategories = [...categories, newCategory];
+        setCategories(updatedCategories);
+        localStorage.setItem('categories', JSON.stringify(updatedCategories)); // Guardar en localStorage
     };
 
     const icons = [<FaHome />, <FaCalendarAlt />, <FaCog />, <FaUser />];

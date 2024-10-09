@@ -1,7 +1,7 @@
-// src/components/Topbar.js
 import { faUser } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { useEffect, useRef, useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Importar useNavigate para redirigir
 import './topbar.css';
 
 const Topbar = () => {
@@ -9,6 +9,7 @@ const Topbar = () => {
   const [isNotificationOpen, setNotificationOpen] = useState(false);
   const dropdownRef = useRef(null);
   const notificationRef = useRef(null);
+  const navigate = useNavigate(); // Inicializar useNavigate
 
   const toggleMenu = () => {
     setMenuOpen(!isMenuOpen);
@@ -34,11 +35,16 @@ const Topbar = () => {
     };
   }, []);
 
+  const handleLogout = () => {
+    localStorage.clear(); // Limpiar localStorage
+    navigate('/auth'); // Redirigir a la vista de autenticación
+  };
+
   return (
     <div className="topbar">
       <div className="topbar-left">
       </div>
-      <div className="topbar-right"> 
+      <div className="topbar-right">
         <FontAwesomeIcon
           icon={faUser}
           className="user-icon"
@@ -47,9 +53,7 @@ const Topbar = () => {
         {isMenuOpen && (
           <div className={`dropdown-menu user-menu ${isMenuOpen ? 'open' : ''}`} ref={dropdownRef}>
             <ul>
-              <li>Perfil</li>
-              <li>Configuraciones</li>
-              <li>Cerrar sesión</li>
+              <li onClick={handleLogout}>Cerrar sesión</li> {/* Asignar la función handleLogout */}
             </ul>
           </div>
         )}

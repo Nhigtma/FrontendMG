@@ -8,13 +8,11 @@ const Sidebar = ({ options = [] }) => {
     const [categories, setCategories] = useState([]);
     const navigate = useNavigate();
 
-    // Cargar las categorías desde el localStorage al iniciar
     useEffect(() => {
         const storedCategories = JSON.parse(localStorage.getItem('categories')) || [];
         setCategories(storedCategories);
     }, []);
 
-    // Manejar clic en las opciones
     const handleOptionClick = (index) => {
         setActiveIndex(index);
         if (index === 0) {
@@ -25,11 +23,10 @@ const Sidebar = ({ options = [] }) => {
             navigate('/history');
         } else {
             const category = categories[index - options.length];
-            navigate(`/category/${category.name}`);
+            navigate(`/category/${category.name}`); // Corrección aquí
         }
     };
 
-    // Guardar una nueva categoría
     const addCategory = (newCategory) => {
         const updatedCategories = [...categories, newCategory];
         setCategories(updatedCategories);
@@ -52,15 +49,13 @@ const Sidebar = ({ options = [] }) => {
                             {option}
                         </li>
                         {index === 1 && (
-                            <>
-                                <li
-                                    className={activeIndex === 'history' ? 'active' : ''}
-                                    onClick={() => handleOptionClick('history')}
-                                >
-                                    <span className="icon">{icons[1]}</span>
-                                    Historial
-                                </li>
-                            </>
+                            <li
+                                className={activeIndex === 'history' ? 'active' : ''}
+                                onClick={() => handleOptionClick('history')}
+                            >
+                                <span className="icon">{icons[1]}</span>
+                                Historial
+                            </li>
                         )}
                     </React.Fragment>
                 ))}

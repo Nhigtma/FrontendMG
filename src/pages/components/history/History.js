@@ -7,7 +7,7 @@ import './history.css';
 const History = () => {
     const [highestScore, setHighestScore] = useState(null);
     const [wishes, setWishes] = useState([]);
-    const [error, setError] = useState(null);
+    const [error] = useState(null);
 
     useEffect(() => {
         const fetchUserHistory = async () => {
@@ -40,9 +40,7 @@ const History = () => {
                     <div className="history-inner">
                         <h1>Historial de Actividades</h1>
                         <p>Aquí puedes ver todas tus actividades pasadas...</p>
-
-                        {error && <p className="error-message">{error}</p>}
-
+                        
                         <h2>Puntuación Máxima Lograda</h2>
                         {highestScore !== null ? (
                             <p>{highestScore}</p>

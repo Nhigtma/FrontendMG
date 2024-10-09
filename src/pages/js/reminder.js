@@ -36,6 +36,7 @@ export async function getReminders(userId) {
     if (response.ok) {
         const reminders = await response.json();
         const filteredReminders = reminders.map(reminder => ({
+            id: reminder.id,
             reminder_date: reminder.reminder_date,
             reminder_message: reminder.reminder_message,
         }));

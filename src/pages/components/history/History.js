@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { getUserHistory } from '../../js/historial'; // Asegúrate de importar correctamente tu función
+import { getUserHistory } from '../../js/historial';
 import Sidebar from '../sidebar/Sidebar';
 import Topbar from '../topbar/Topbar';
 import './history.css';

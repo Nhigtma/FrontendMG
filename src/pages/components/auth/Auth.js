@@ -34,7 +34,6 @@ const Auth = () => {
 
     try {
       await registerUser(name, email, password);
-      alert("Usuario registrado exitosamente");
       navigate('/createCategory');
     } catch (error) {
       handleError(error);
@@ -52,9 +51,8 @@ const Auth = () => {
       
       localStorage.setItem('token', idToken);
       localStorage.setItem('userId', uid);
-      
-      alert("Inicio de sesión exitoso con Firebase");
-      navigate('/createCategory');
+
+      navigate('/home');
     } catch (error) {
       handleError(error);
     }

@@ -2,7 +2,6 @@ import { getAuth } from 'firebase/auth';
 
 const API_URL = 'http://localhost:4000';
 
-// Crear un deseo con rutina
 export const createWishWithRoutine = async (wishData) => {
     try {
         const auth = getAuth();
@@ -36,7 +35,6 @@ export const createWishWithRoutine = async (wishData) => {
     }
 };
 
-// Obtener rutinas por ID de deseo
 export const getRoutinesByWishId = async (wishId) => {
     try {
         const auth = getAuth();
@@ -68,7 +66,6 @@ export const getRoutinesByWishId = async (wishId) => {
     }
 };
 
-// Actualizar rutinas de un deseo
 export const updateRoutinesByWishId = async (wishId, updatedRoutines) => {
     try {
         const auth = getAuth();
@@ -102,7 +99,6 @@ export const updateRoutinesByWishId = async (wishId, updatedRoutines) => {
     }
 };
 
-// Obtener todos los deseos con rutinas
 export const getAllWishesWithRoutines = async () => {
     try {
         const auth = getAuth();
@@ -127,7 +123,6 @@ export const getAllWishesWithRoutines = async () => {
             throw new Error(data.error || 'Error al obtener todos los deseos con rutinas');
         }
 
-        // Organizar deseos y rutinas
         const organizedWishes = data.map(wish => {
             const organizedRoutines = {
                 lunes: [],
@@ -139,7 +134,6 @@ export const getAllWishesWithRoutines = async () => {
                 domingo: [],
             };
 
-            // Organizar rutinas por día de la semana
             wish.routines.forEach(routine => {
                 switch (routine.week_day_id) {
                     case process.env.LUNES:
@@ -184,7 +178,6 @@ export const getAllWishesWithRoutines = async () => {
     }
 };
 
-// Eliminar una rutina
 export const deleteRoutine = async (routineId) => {
     try {
         const auth = getAuth();
@@ -215,28 +208,3 @@ export const deleteRoutine = async (routineId) => {
         throw error;
     }
 };
-//     console.log('Datos de la rutina enviados:', routineData);
-
-//     try {
-//         const response = await fetch(`${API_URL}/protected/routines/wishesRoutine`, {
-//             method: 'POST',
-//             headers: {
-//                 'Content-Type': 'application/json',
-//                 'Authorization': `Bearer ${token}`,
-//             },
-//             body: JSON.stringify(routineData),
-//         });
-
-//         const data = await response.json();
-//         console.log('Respuesta del servidor:', data);
-
-//         if (!response.ok) {
-//             throw new Error(data.error || 'Error al crear la rutina');
-//         }
-
-//         return data;
-//     } catch (error) {
-//         console.error('Error al crear la rutina:', error.message);
-//         throw error;
-//     }
-// };

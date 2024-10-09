@@ -1,6 +1,5 @@
 const API_URL = 'http://localhost:4000';
 
-// Crear un nuevo deseo
 export const createWish = async (title, description, categoryId, userId, isRoutine, routines) => {
     const token = localStorage.getItem('token');
 
@@ -39,7 +38,6 @@ export const createWish = async (title, description, categoryId, userId, isRouti
     }
 };
 
-// Obtener un deseo por ID
 export const getWishById = async (wishId) => {
     const token = localStorage.getItem('token');
 
@@ -63,7 +61,6 @@ export const getWishById = async (wishId) => {
     }
 };
 
-// Actualizar un deseo por ID
 export const updateWishById = async (wishId, title, description) => {
     const token = localStorage.getItem('token');
 
@@ -117,7 +114,6 @@ export const deleteWishById = async (wishId) => {
     }
 };
 
-// Obtener todos los deseos de un usuario
 export const getUserWishes = async (userId) => {
     const token = localStorage.getItem('token');
 
@@ -141,7 +137,6 @@ export const getUserWishes = async (userId) => {
     }
 };
 
-// Marcar un deseo como completado
 export const completeWish = async (wishId, userId) => {
     const token = localStorage.getItem('token');
 
@@ -171,7 +166,6 @@ export const completeWish = async (wishId, userId) => {
     }
 };
 
-// Marcar la rutina del deseo como realizada
 export const performRoutine = async (wishId, userId) => {
     const token = localStorage.getItem('token');
 

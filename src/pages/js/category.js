@@ -133,7 +133,6 @@ export const deleteCategoryById = async (categoryId) => {
     }
 };
 
-// Obtener deseos por categoría
 export const getWishesByCategory = async (category_id) => {
     const token = localStorage.getItem('token');
 

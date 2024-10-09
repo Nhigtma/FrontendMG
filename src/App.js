@@ -5,7 +5,7 @@ import CategoryView from '../src/pages/components/categoryView/CategoryView';
 import CreateCategory from '../src/pages/components/createCategory/CreateCategory';
 import History from '../src/pages/components/history/History';
 import Home from '../src/pages/components/home/Home';
-import NotificationsComponent from '../src/pages/components/notifications/notificationsCompenent'; // Asegúrate de que la ruta es correcta
+import NotificationsComponent from '../src/pages/components/notifications/notificationsCompenent';
 import Topbar from '../src/pages/components/topbar/Topbar';
 
 function App() {

@@ -9,7 +9,7 @@ import './home.css';
 
 function Home() {
     const [date, setDate] = useState(new Date());
-    const [time, setTime] = useState('12:00'); // Establece un valor predeterminado para la hora
+    const [time, setTime] = useState('12:00');
     const [reminders, setReminders] = useState({});
     const [newReminder, setNewReminder] = useState('');
     const [showInput, setShowInput] = useState(false);
@@ -31,7 +31,7 @@ function Home() {
             acc[dateKey].push({
                 id: reminder.id,
                 message: reminder.reminder_message,
-                reminder_date: reminder.reminder_date, // Guardamos la fecha completa
+                reminder_date: reminder.reminder_date,
             });
             return acc;
         }, {});
@@ -73,7 +73,7 @@ function Home() {
 
         fetchReminders(userId);
         setNewReminder('');
-        setTime('12:00'); // Resetear la hora a un valor predeterminado
+        setTime('12:00');
         setShowInput(false);
 
         setTimeout(() => {
@@ -91,7 +91,7 @@ function Home() {
         const dateKey = date.toDateString();
         const reminder = reminders[dateKey][index];
         setNewReminder(reminder.message);
-        setTime(new Date(reminder.reminder_date).toTimeString().slice(0, 5)); // Cargar la hora al editar
+        setTime(new Date(reminder.reminder_date).toTimeString().slice(0, 5));
         setEditIndex(index);
         setShowInput(true);
     };

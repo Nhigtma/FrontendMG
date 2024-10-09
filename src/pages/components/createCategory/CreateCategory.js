@@ -114,15 +114,6 @@ function CreateCategory() {
 
                     {isWishModalOpen && <CreateWishModal onClose={closeWishModal} />}
                 </div>
-
-                <div className="categories-list">
-                    <h3>Categorías Creadas:</h3>
-                    <ul>
-                        {categories.map(category => (
-                            <li key={category.id}>{category.name}</li>
-                        ))}
-                    </ul>
-                </div>
             </div>
         </div>
     );

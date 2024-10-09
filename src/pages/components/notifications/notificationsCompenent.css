@@ -1,37 +1,66 @@
 body {
     margin: 0;
-    background-color: #007BFF;
+    background-color: #1d3557;
+    font-family: 'Roboto', sans-serif;
 }
 
 .notifications-container {
-    background-color: #007BFF;
-    padding: 10px;
-    max-width: 500px;
-    margin: 0 auto;
+    background-color: #f1faee;
+    padding: 20px;
+    max-width: 600px;
+    margin: 20px auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     text-align: center;
 }
 
 .notification-card {
-    margin-bottom: 8px;
+    margin-bottom: 16px;
+    padding: 15px;
+    background-color: #a8dadc;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    text-align: left;
 }
 
 .notification-card .MuiCardContent-root {
     padding: 12px;
+    color: #1d3557;
 }
 
 .MuiTypography-h4 {
-    font-size: 1.5rem;
+    font-size: 1.75rem;
+    color: #1d3557;
     margin-bottom: 15px;
 }
 
 .MuiListItemText-root {
     text-align: left;
+    color: #1d3557;
 }
 
 .MuiTypography-h6 {
-    font-size: 1rem;
+    font-size: 1.125rem;
+    font-weight: bold;
+    color: #457b9d;
 }
 
 .notifications-container button {
     margin-bottom: 13px;
+    padding: 10px 20px;
+    background-color: #457b9d;
+    color: #f1faee;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
 }
+
+.notifications-container button:hover {
+    background-color: #1d3557;
+}
+
+.notifications-container button:active {
+    background-color: #0056b3;
+}
+

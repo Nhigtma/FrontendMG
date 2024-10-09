@@ -1,4 +1,3 @@
-// src/pages/js/getPDF.js
 export function downloadPDF(userId, token) {
     fetch(`http://localhost:4000/protected/routines/generate-pdf/${userId}`, {
         method: 'GET',

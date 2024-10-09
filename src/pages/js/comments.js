@@ -52,7 +52,6 @@ export const getCommentsByWishId = async (wishId) => {
             throw new Error(data.error || 'Error al obtener los comentarios');
         }
 
-        // Retornar solo los textos de los comentarios
         return data.map(comment => comment.comment_text);
     } catch (error) {
         console.error('Error al obtener los comentarios:', error.message);

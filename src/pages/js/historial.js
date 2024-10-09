@@ -29,7 +29,7 @@ export const getUserHistory = async () => {
         }
 
         return {
-            highestScore: data.history.highest_score,
+            highestScore: data.history.highest_score || 0,
             wishes: data.wishes,
         };
     } catch (error) {

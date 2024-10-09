@@ -1,26 +1,61 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 const useWebSocketNotifications = (socketUrl) => {
     const [notifications, setNotifications] = useState([]);
+    const [connectionStatus, setConnectionStatus] = useState('connecting');
+    const socketRef = useRef(null);
+    const isReconnecting = useRef(false);
 
     useEffect(() => {
-        const socket = new WebSocket(socketUrl);
+        const connectWebSocket = () => {
+            if (socketRef.current && socketRef.current.readyState === WebSocket.OPEN) {
+                return;
+            }
 
-        socket.addEventListener('open', () => {
-            console.log('Conectado al servidor WebSocket.');
-        });
+            socketRef.current = new WebSocket(socketUrl);
 
-        socket.addEventListener('message', (event) => {
-            const notification = JSON.parse(event.data);
-            handleNotification(notification);
-        });
+            socketRef.current.addEventListener('open', () => {
+                console.log('Conectado al servidor WebSocket.');
+                setConnectionStatus('connected');
+                isReconnecting.current = false;
+            });
+
+            socketRef.current.addEventListener('message', (event) => {
+                console.log('Mensaje recibido del WebSocket:', event.data); // Depuración para mostrar el mensaje recibido
+                try {
+                    const notification = JSON.parse(event.data);
+                    handleNotification(notification);
+                } catch (error) {
+                    console.error('Error al parsear el mensaje:', error);
+                }
+            });
+
+            socketRef.current.addEventListener('error', (error) => {
+                console.error('Error en la conexión WebSocket:', error);
+                setConnectionStatus('error');
+            });
+
+            socketRef.current.addEventListener('close', (event) => {
+                console.log('Conexión WebSocket cerrada:', event);
+                setConnectionStatus('closed');
+                if (!isReconnecting.current) {
+                    isReconnecting.current = true;
+                    setTimeout(connectWebSocket, 5000);
+                }
+            });
+        };
+
+        connectWebSocket();
 
         return () => {
-            socket.close();
+            if (socketRef.current) {
+                socketRef.current.close();
+            }
         };
     }, [socketUrl]);
 
     const handleNotification = (notification) => {
+        console.log('Procesando notificación:', notification);
         switch (notification.type) {
             case 'reminder':
                 scheduleReminder(notification);
@@ -37,34 +72,42 @@ const useWebSocketNotifications = (socketUrl) => {
     };
 
     const scheduleReminder = (notification) => {
-        const { timeRemaining, message } = notification;
-        const timeDiff = new Date(timeRemaining).getTime() - new Date().getTime();
+        const { user_id, message } = notification;
+        const storedUserId = localStorage.getItem('userId'); // Obtener userId desde localStorage
 
-        if (timeDiff > 0) {
-            setTimeout(() => {
-                displayReminder(message);
-            }, timeDiff);
-        } else {
+        // Verificar si el user_id de la notificación coincide con el almacenado en localStorage
+        if (user_id === storedUserId) {
             displayReminder(message);
+        } else {
+            console.log(`Notificación ignorada, user_id: ${user_id} no coincide con el almacenado: ${storedUserId}`);
         }
     };
 
     const displayReminder = (message) => {
         console.log('Recordatorio:', message);
-        setNotifications((prevNotifications) => [...prevNotifications, { type: 'reminder', message }]);
+        setNotifications((prevNotifications) => [
+            ...prevNotifications,
+            { type: 'reminder', message }
+        ]);
     };
 
     const displayEvaluation = (notification) => {
         console.log('Evaluación:', notification.message);
-        setNotifications((prevNotifications) => [...prevNotifications, { type: 'evaluation', message: notification.message }]);
+        setNotifications((prevNotifications) => [
+            ...prevNotifications,
+            { type: 'evaluation', message: notification.message }
+        ]);
     };
 
     const displayRoutineUpdate = (notification) => {
         console.log('Actualización de rutina:', notification.message);
-        setNotifications((prevNotifications) => [...prevNotifications, { type: 'routine', message: notification.message }]);
+        setNotifications((prevNotifications) => [
+            ...prevNotifications,
+            { type: 'routine', message: notification.message }
+        ]);
     };
 
-    return notifications;
+    return { notifications, connectionStatus };
 };
 
 export default useWebSocketNotifications;

@@ -12,7 +12,6 @@ function CreateCategory() {
     const [categories, setCategories] = useState([]);
     const [error, setError] = useState({ name: false, description: false });
 
-    // Cargar las categorías desde el localStorage cuando el componente se monta
     useEffect(() => {
         const storedCategories = JSON.parse(localStorage.getItem('categories')) || [];
         setCategories(storedCategories);
@@ -52,11 +51,9 @@ function CreateCategory() {
 
             const newCategory = { name: categoryName, id: response.id || response.data.id };
 
-            // Guardar el id y la descripción de la categoría en el localStorage
             localStorage.setItem('categoryId', response.id || response.data.id);
             localStorage.setItem('categoryDescription', categoryDescription);
 
-            // Actualizar el estado de las categorías y guardarlas en el localStorage
             const updatedCategories = [...categories, newCategory];
             setCategories(updatedCategories);
             localStorage.setItem('categories', JSON.stringify(updatedCategories));

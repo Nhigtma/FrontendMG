@@ -1,18 +1,42 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import { FaEdit, FaTrashAlt } from 'react-icons/fa';
 import { downloadPDF } from '../../js/getPDF';
+import { createReminder, deleteReminder, getReminders, updateReminder } from '../../js/reminder';
 import Sidebar from '../sidebar/Sidebar';
 import './home.css';
 
 function Home() {
     const [date, setDate] = useState(new Date());
+    const [time, setTime] = useState('12:00'); // Establece un valor predeterminado para la hora
     const [reminders, setReminders] = useState({});
     const [newReminder, setNewReminder] = useState('');
     const [showInput, setShowInput] = useState(false);
     const [message, setMessage] = useState('');
     const [editIndex, setEditIndex] = useState(null);
+
+    useEffect(() => {
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+            fetchReminders(userId);
+        }
+    }, []);
+
+    const fetchReminders = async (userId) => {
+        const fetchedReminders = await getReminders(userId);
+        const remindersByDate = fetchedReminders.reduce((acc, reminder) => {
+            const dateKey = new Date(reminder.reminder_date).toDateString();
+            acc[dateKey] = acc[dateKey] || [];
+            acc[dateKey].push({
+                id: reminder.id,
+                message: reminder.reminder_message,
+                reminder_date: reminder.reminder_date, // Guardamos la fecha completa
+            });
+            return acc;
+        }, {});
+        setReminders(remindersByDate);
+    };
 
     const onDateChange = (selectedDate) => {
         setDate(selectedDate);
@@ -20,30 +44,36 @@ function Home() {
         setEditIndex(null);
     };
 
-    const addOrEditReminder = () => {
+    const addOrEditReminder = async () => {
         if (!newReminder.trim()) {
             setMessage("Por favor, introduce un recordatorio.");
             return;
         }
 
-        const dateKey = date.toDateString();
-        const currentReminders = reminders[dateKey] || [];
-        
+        const userId = localStorage.getItem('userId');
+        const dateTime = new Date(date);
+        const [hours, minutes] = time.split(':');
+        dateTime.setHours(hours, minutes);
+
+        const reminderData = {
+            reminder_date: dateTime,
+            reminder_message: newReminder,
+        };
+
         if (editIndex !== null) {
-            currentReminders[editIndex] = newReminder;
+            const dateKey = date.toDateString();
+            const reminderId = reminders[dateKey][editIndex].id;
+            await updateReminder(reminderId, reminderData);
             setMessage("Recordatorio editado exitosamente.");
             setEditIndex(null);
         } else {
-            currentReminders.push(newReminder);
+            await createReminder(userId, reminderData);
             setMessage("Recordatorio añadido exitosamente.");
         }
 
-        setReminders({
-            ...reminders,
-            [dateKey]: currentReminders,
-        });
-
+        fetchReminders(userId);
         setNewReminder('');
+        setTime('12:00'); // Resetear la hora a un valor predeterminado
         setShowInput(false);
 
         setTimeout(() => {
@@ -58,27 +88,22 @@ function Home() {
     };
 
     const handleEditReminderClick = (index) => {
-        setNewReminder(reminders[date.toDateString()][index]);
+        const dateKey = date.toDateString();
+        const reminder = reminders[dateKey][index];
+        setNewReminder(reminder.message);
+        setTime(new Date(reminder.reminder_date).toTimeString().slice(0, 5)); // Cargar la hora al editar
         setEditIndex(index);
         setShowInput(true);
     };
 
-    const handleDeleteReminderClick = (index) => {
+    const handleDeleteReminderClick = async (index) => {
         const dateKey = date.toDateString();
-        const currentReminders = reminders[dateKey] || [];
-        currentReminders.splice(index, 1);
-
-        if (currentReminders.length === 0) {
-            const { [dateKey]: _, ...restReminders } = reminders;
-            setReminders(restReminders);
-        } else {
-            setReminders({
-                ...reminders,
-                [dateKey]: currentReminders,
-            });
-        }
+        const reminderId = reminders[dateKey][index].id;
+        await deleteReminder(reminderId);
 
         setMessage("Recordatorio eliminado exitosamente.");
+        const userId = localStorage.getItem('userId');
+        fetchReminders(userId);
 
         setTimeout(() => {
             setMessage('');
@@ -92,7 +117,7 @@ function Home() {
             <div className="reminders-list">
                 {remindersForDate.map((reminder, index) => (
                     <div key={index} className="reminder-card">
-                        <p>{reminder}</p>
+                        <p>{reminder.message} - {new Date(reminder.reminder_date).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</p>
                         <div className="reminder-actions">
                             <FaEdit onClick={() => handleEditReminderClick(index)} className="icon edit-icon" />
                             <FaTrashAlt onClick={() => handleDeleteReminderClick(index)} className="icon delete-icon" />
@@ -158,6 +183,11 @@ function Home() {
                                         value={newReminder}
                                         onChange={(e) => setNewReminder(e.target.value)}
                                         placeholder="Nuevo recordatorio"
+                                    />
+                                    <input
+                                        type="time"
+                                        value={time}
+                                        onChange={(e) => setTime(e.target.value)}
                                     />
                                     <button onClick={addOrEditReminder}>
                                         {editIndex !== null ? "Guardar" : "Añadir"}

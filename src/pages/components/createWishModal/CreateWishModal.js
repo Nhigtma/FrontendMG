@@ -21,60 +21,36 @@ function CreateWishModal({ onClose }) {
         const userId = localStorage.getItem('userId');
         const categoryId = localStorage.getItem('categoryId');
 
-        console.log('Valores actuales:', {
-            title,
-            description,
-            userId,
-            categoryId,
-            isRoutine,
-            weeklyRoutine,
-        });
-
-        const missingFields = [];
-        if (!title) missingFields.push('Título');
-        if (!description) missingFields.push('Descripción');
-        if (!userId) missingFields.push('userId');
-        if (!categoryId) missingFields.push('categoryId');
-
-        if (missingFields.length > 0) {
-            alert(`Faltan los siguientes campos: ${missingFields.join(', ')}`);
+        if (!title || !description || !userId || !categoryId) {
+            alert('Faltan campos obligatorios');
             return;
         }
 
         if (isRoutine && Object.values(weeklyRoutine).every(day => day === '')) {
-            alert("Debes ingresar al menos una rutina para algún día.");
+            alert("Debes ingresar al menos una rutina.");
             return;
         }
 
-        const routines = {
-            lunes: weeklyRoutine.lunes || null,
-            martes: weeklyRoutine.martes || null,
-            miercoles: weeklyRoutine.miercoles || null,
-            jueves: weeklyRoutine.jueves || null,
-            viernes: weeklyRoutine.viernes || null,
-            sabado: weeklyRoutine.sabado || null,
-            domingo: weeklyRoutine.domingo || null,
-        };
-
+        const routines = { ...weeklyRoutine };
         try {
+            const wishData = { title, description, user_id: userId, category_id: categoryId, is_routine: isRoutine, routines: isRoutine ? routines : null };
+
             if (isRoutine) {
-                const wishData = {
-                    title,
-                    description,
-                    user_id: userId,
-                    category_id: categoryId,
-                    is_routine: true,
-                    routines
-                };
                 await createWishWithRoutine(wishData);
-                console.log('Deseo con rutina creado exitosamente');
+                console.log('Deseo con rutina creado');
             } else {
                 await createWish(title, description, categoryId, userId, false, null);
-                console.log('Deseo creado exitosamente');
+                console.log('Deseo creado');
             }
+
+            // Guardar el deseo en localStorage
+            const existingWishes = JSON.parse(localStorage.getItem('wishes')) || [];
+            existingWishes.push(wishData);
+            localStorage.setItem('wishes', JSON.stringify(existingWishes));
+
             onClose();
         } catch (error) {
-            console.error('Error al crear el deseo o la rutina:', error.message);
+            console.error('Error al crear deseo:', error.message);
         }
     };
 
@@ -87,36 +63,40 @@ function CreateWishModal({ onClose }) {
             <div className="modal-content-deseos">
                 <h2>Crear Nuevo Deseo</h2>
 
-                <label>Título:</label>
+                <label htmlFor="title">Título:</label>
                 <input
+                    id="title"
                     type="text"
                     placeholder="Escribe el título"
                     value={title}
                     onChange={(e) => setTitle(e.target.value)}
                 />
 
-                <label>Descripción:</label>
+                <label htmlFor="description">Descripción:</label>
                 <textarea
+                    id="description"
                     placeholder="Escribe la descripción"
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                ></textarea>
+                />
 
                 <div className="checkbox-container">
                     <input
+                        id="isRoutine"
                         type="checkbox"
                         checked={isRoutine}
                         onChange={() => setIsRoutine(!isRoutine)}
                     />
-                    <label>Rutina</label>
+                    <label htmlFor="isRoutine">Rutina</label>
                 </div>
 
                 {isRoutine && (
                     <div className="routine-days">
                         {Object.keys(weeklyRoutine).map((day) => (
                             <div key={day}>
-                                <label>{day.charAt(0).toUpperCase() + day.slice(1)}:</label>
+                                <label htmlFor={day}>{day.charAt(0).toUpperCase() + day.slice(1)}:</label>
                                 <input
+                                    id={day}
                                     type="text"
                                     value={weeklyRoutine[day]}
                                     onChange={(e) => handleRoutineChange(day, e.target.value)}

@@ -6,16 +6,21 @@ import './history.css';
 
 const History = () => {
     const [highestScore, setHighestScore] = useState(null);
-    const [wishes, setWishes] = useState([]);
-    const [error] = useState(null);
+    const [wishes, setWishes] = useState([]); // Inicializa como un array vacío
+    const [error, setError] = useState(null); // Usamos el estado de error
 
     useEffect(() => {
         const fetchUserHistory = async () => {
             try {
-                const { highestScore, wishes } = await getUserHistory();
-                setHighestScore(highestScore);
-                setWishes(wishes);
+                const data = await getUserHistory();
+                if (data && data.wishes) {
+                    setHighestScore(data.highestScore);
+                    setWishes(data.wishes);
+                } else {
+                    setWishes([]); // Aseguramos que wishes sea un array
+                }
             } catch (err) {
+                setError('Hubo un problema al cargar el historial.'); // Guardar el mensaje de error
             }
         };
 
@@ -40,7 +45,9 @@ const History = () => {
                     <div className="history-inner">
                         <h1>Historial de Actividades</h1>
                         <p>Aquí puedes ver todas tus actividades pasadas...</p>
-                        
+
+                        {error && <p className="error">{error}</p>} {/* Mostrar mensaje de error */}
+
                         <h2>Puntuación Máxima Lograda</h2>
                         {highestScore !== null ? (
                             <p>{highestScore}</p>
@@ -70,5 +77,3 @@ const History = () => {
 };
 
 export default History;
-
-

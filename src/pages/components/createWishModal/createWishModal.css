@@ -6,8 +6,9 @@
 
 html, body {
     height: 100%;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
     background-color: #f1faee;
+    color: #333;
 }
 
 .modal-overlay {
@@ -20,60 +21,79 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .modal-content-deseos {
     background-color: white;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    padding: 25px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
     width: 90%; 
-    max-width: 600px;
+    max-width: 550px;
     text-align: left;
     overflow-y: auto;
     max-height: 80vh;
+    transition: transform 0.3s ease;
 }
 
 .modal-content-deseos h2 {
     margin-bottom: 20px;
-    font-size: 1.8rem;
+    font-size: 2rem;
     text-align: center;
+    color: #007BFF;
 }
 
 .modal-content-deseos label {
     font-size: 1rem;
-    margin-bottom: 5px;
+    margin-bottom: 8px;
     display: block;
+    color: #333;
 }
 
 .modal-content-deseos input,
 .modal-content-deseos textarea {
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     margin-bottom: 15px;
-    border: 1px solid #ccc;
+    border: 1px solid #ddd;
     border-radius: 8px;
     font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+.modal-content-deseos input:hover,
+.modal-content-deseos textarea:hover,
+.modal-content-deseos input:focus,
+.modal-content-deseos textarea:focus {
+    border-color: #007BFF;
+    outline: none;
 }
 
 .modal-content-deseos textarea {
-    height: 80px;
+    height: 100px;
     resize: none;
 }
 
 .modal-actions {
     display: flex;
     justify-content: flex-end;
+    gap: 10px;
+    margin-top: 20px;
 }
 
 .modal-actions button {
-    padding: 10px 20px;
+    padding: 12px 25px;
     border: none;
     border-radius: 8px;
     cursor: pointer;
     font-size: 1rem;
-    margin-left: 10px;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .modal-actions button:first-child {
@@ -86,23 +106,20 @@ html, body {
 }
 
 .modal-actions button:hover {
-    opacity: 0.9;
+    background-color: #0056b3;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
 .routine-days {
     margin-top: 20px;
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 20px;
+    gap: 15px;
 }
 
 .routine-days div {
     display: flex;
     flex-direction: column;
-}
-
-.routine-days input {
-    margin-top: 4px;
 }
 
 .checkbox-container {
@@ -115,6 +132,7 @@ html, body {
 .checkbox-container input[type="checkbox"] {
     margin-right: 10px;
 }
+
 .success-message {
     margin-top: 10px;
     color: green;

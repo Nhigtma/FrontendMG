@@ -20,31 +20,42 @@ const CategoryView = () => {
   const [wishTitle, setWishTitle] = useState('');
   const [wishDescription, setWishDescription] = useState('');
 
+  // Cargar la información de la categoría, deseos y comentarios desde localStorage
   useEffect(() => {
     const storedDescription = localStorage.getItem('categoryDescription');
     const categoryId = localStorage.getItem('categoryId');
-
     const storedWishes = JSON.parse(localStorage.getItem('wishes')) || [];
 
     if (storedDescription) setCategoryDescription(storedDescription);
 
     if (storedWishes.length > 0) {
       setWishDetails(storedWishes);
+
+      // Cargar comentarios desde localStorage
+      const storedComments = {};
+      storedWishes.forEach(wish => {
+        const savedComments = JSON.parse(localStorage.getItem(`comments_${wish.id}`)) || [];
+        storedComments[wish.id] = savedComments;
+      });
+      setComments(storedComments);
     } else if (categoryId) {
       const fetchWishes = async () => {
         try {
           const wishes = await getWishesByCategory(categoryId);
           if (wishes) {
             setWishDetails(wishes);
-
             localStorage.setItem('wishes', JSON.stringify(wishes));
 
             const commentsData = {};
             const routinesData = {};
 
             for (const wish of wishes) {
-              const wishComments = await getCommentsByWishId(wish.id);
+              // Obtener comentarios de la API o localStorage
+              let wishComments = JSON.parse(localStorage.getItem(`comments_${wish.id}`)) || await getCommentsByWishId(wish.id);
               commentsData[wish.id] = wishComments;
+
+              // Guardar comentarios en localStorage
+              localStorage.setItem(`comments_${wish.id}`, JSON.stringify(wishComments));
 
               const wishRoutines = await getRoutinesByWishId(wish.id);
               routinesData[wish.id] = wishRoutines;
@@ -61,6 +72,7 @@ const CategoryView = () => {
     }
   }, []);
 
+  // Modo de edición de deseos
   const handleEditClick = (wish) => {
     setWishTitle(wish.title);
     setWishDescription(wish.description);
@@ -68,6 +80,7 @@ const CategoryView = () => {
     setEditMode(true);
   };
 
+  // Guardar los cambios de un deseo
   const handleUpdateWish = async (e) => {
     e.preventDefault();
     try {
@@ -81,48 +94,45 @@ const CategoryView = () => {
         : wish);
 
       setWishDetails(updatedWishes);
-
       localStorage.setItem('wishes', JSON.stringify(updatedWishes));
     } catch (error) {
       console.error('Error al actualizar el deseo:', error.message);
     }
   };
 
+  // Eliminar un deseo
   const handleDeleteWish = async (wishId) => {
     try {
       await deleteWishById(wishId);
       const updatedWishes = wishDetails.filter(wish => wish.id !== wishId);
       setWishDetails(updatedWishes);
-
       localStorage.setItem('wishes', JSON.stringify(updatedWishes));
     } catch (error) {
       console.error('Error al eliminar el deseo:', error.message);
     }
   };
 
+  // Crear un nuevo comentario y guardarlo en localStorage
   const handleCreateComment = async (wishId) => {
     try {
       await createComment(wishId, newComment);
+
       const updatedComments = await getCommentsByWishId(wishId);
       setComments(prevComments => ({ ...prevComments, [wishId]: updatedComments }));
+
+      // Guardar los comentarios actualizados en localStorage
+      localStorage.setItem(`comments_${wishId}`, JSON.stringify(updatedComments));
+
       setNewComment('');
     } catch (error) {
       console.error('Error al crear el comentario:', error.message);
     }
   };
 
-  const handleCreateWishClick = () => {
-    console.log('Crear deseo clicado');
-  };
-
   return (
     <div className="category-view-container">
       <Sidebar options={["Categoría", "Calendario"]} />
       <div className="category-content">
-        <button className="create-wish-button" onClick={handleCreateWishClick}>
-          Crear Deseo
-        </button>
-
         <h1 className="category-title">{categoryName || "Categoría sin nombre"}</h1>
         <p className="category-description">{categoryDescription}</p>
 
@@ -161,6 +171,7 @@ const CategoryView = () => {
   );
 };
 
+// Componente para cada deseo
 const WishItem = ({ wish, comments, routines, onEditClick, onDeleteClick, newComment, setNewComment, onCreateComment }) => (
   <div className="wish-card">
     <h3 className="wish-title">{wish.title}</h3>
@@ -187,6 +198,7 @@ const WishItem = ({ wish, comments, routines, onEditClick, onDeleteClick, newCom
   </div>
 );
 
+// Sección de comentarios
 const CommentsSection = ({ comments, newComment, setNewComment, onCreateComment }) => (
   <div className="comments-section">
     <h4>Comentarios</h4>
@@ -209,17 +221,17 @@ const CommentsSection = ({ comments, newComment, setNewComment, onCreateComment 
   </div>
 );
 
+// Sección de rutinas
 const RoutinesSection = ({ routines }) => (
   <div className="routines-section">
     <h4>Rutinas</h4>
     <ul>
-      {routines.map((routine, idx) => (
-        <li key={idx}>{routine.dayOfWeek}: {routine.time}</li>
-      ))}
+      {routines.map((routine, idx) => <li key={idx}>{routine.description}</li>)}
     </ul>
   </div>
 );
 
+// Formulario para editar un deseo
 const WishForm = ({ wishTitle, wishDescription, setWishTitle, setWishDescription, handleUpdateWish, setEditMode }) => (
   <form className="wish-form" onSubmit={handleUpdateWish}>
     <input
@@ -227,14 +239,18 @@ const WishForm = ({ wishTitle, wishDescription, setWishTitle, setWishDescription
       value={wishTitle}
       onChange={e => setWishTitle(e.target.value)}
       placeholder="Título del deseo"
+      required
     />
     <textarea
       value={wishDescription}
       onChange={e => setWishDescription(e.target.value)}
       placeholder="Descripción del deseo"
+      required
     />
-    <button type="submit">Guardar cambios</button>
-    <button type="button" onClick={() => setEditMode(false)}>Cancelar</button>
+    <div className="form-buttons">
+      <button type="submit">Guardar</button>
+      <button type="button" onClick={() => setEditMode(false)}>Cancelar</button>
+    </div>
   </form>
 );
 
